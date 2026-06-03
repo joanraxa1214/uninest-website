@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard',       icon: LayoutDashboard, path: '/admin' },
   { label: 'Room Management', icon: BedDouble,        path: '/admin/rooms' },
   { label: 'Students',        icon: Users,            path: '/admin/students' },
-  { label: 'Budget Tracker',  icon: Wallet,           path: '/admin/budget' },
+  { label: 'Finances',        icon: Wallet,           path: '/admin/finances' },
   { label: 'Pricing',         icon: Tag,              path: '/admin/pricing' },
 ]
 

@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react'
-import { BedDouble, Users, CheckCircle2, TrendingUp, MessageSquare } from 'lucide-react'
+import { BedDouble, Users, CheckCircle2, TrendingUp, TrendingDown, MessageSquare, Wallet } from 'lucide-react'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
 import { supabase } from '../../lib/supabase'
 
-const CHART_COLORS = { 'Single Room': '#3b82f6', 'Double Sharing': '#8b5cf6', 'Triple Sharing': '#10b981' }
-
 export default function Dashboard() {
-  const [stats,      setStats]     = useState({ total: 0, occupied: 0, available: 0, revenue: 0 })
-  const [chartData,  setChartData] = useState([])
-  const [inquiries,  setInquiries] = useState([])
-  const [loading,    setLoading]   = useState(true)
+  const [stats, setStats] = useState({ totalRooms: 0, totalStudents: 0, occupiedRooms: 0, availableRooms: 0, totalIncome: 0, totalExpenses: 0 })
+  const [chartData, setChartData] = useState([])
+  const [inquiries, setInquiries] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchAll()
-  }, [])
+  useEffect(() => { fetchAll() }, [])
 
   async function fetchAll() {
     setLoading(true)
@@ -24,60 +20,75 @@ export default function Dashboard() {
   }
 
   async function fetchStats() {
+    // Rooms
     const { data: rooms } = await supabase.from('rooms').select('*')
-    if (!rooms) return
+    // Active allocations
+    const { data: allocations } = await supabase.from('room_allocations').select('room_id').eq('status', 'active')
+    // Students
+    const { data: students } = await supabase.from('students').select('id').eq('is_active', true)
+    // Payments total
+    const { data: payments } = await supabase.from('payments').select('amount').eq('status', 'paid')
+    // Expenses total
+    const { data: expenses } = await supabase.from('expenses').select('amount')
 
-    const total     = rooms.length
-    const occupied  = rooms.filter(r => r.status === 'occupied').length
-    const available = rooms.filter(r => r.status === 'available').length
+    const totalRooms = rooms?.length || 0
+    const totalStudents = students?.length || 0
 
-    // revenue: sum prices of occupied rooms (using pricing table if possible)
-    const { data: pricing } = await supabase.from('pricing').select('*')
-    let revenue = 0
-    rooms.filter(r => r.status === 'occupied').forEach(room => {
-      const p = pricing?.find(p => p.room_type === room.type)
-      revenue += p?.monthly_price || room.price || 0
+    // Rooms that have at least one active allocation
+    const occupiedRoomIds = new Set((allocations || []).map(a => a.room_id))
+    // A room is "full" when active allocations >= capacity
+    let occupiedRooms = 0
+    let availableRooms = 0
+    ;(rooms || []).forEach(room => {
+      const activeCount = (allocations || []).filter(a => a.room_id === room.id).length
+      if (activeCount >= room.capacity) {
+        occupiedRooms++
+      } else {
+        availableRooms++
+      }
     })
 
-    // chart data per room type
-    const types = ['Single Room', 'Double Sharing', 'Triple Sharing']
-    const chart = types.map(type => ({
-      name: type.replace(' Sharing', '\nSharing').replace('Single ', 'Single\n'),
-      label: type,
-      total:    rooms.filter(r => r.type === type).length,
-      occupied: rooms.filter(r => r.type === type && r.status === 'occupied').length,
-      available:rooms.filter(r => r.type === type && r.status === 'available').length,
-    }))
+    const totalIncome = (payments || []).reduce((s, p) => s + Number(p.amount), 0)
+    const totalExpenses = (expenses || []).reduce((s, e) => s + Number(e.amount), 0)
 
-    setStats({ total, occupied, available, revenue })
+    // Chart: occupancy per room type
+    const types = ['Single Room', 'Double Sharing', 'Triple Sharing']
+    const chart = types.map(type => {
+      const typeRooms = (rooms || []).filter(r => r.type === type)
+      const totalCap = typeRooms.reduce((s, r) => s + r.capacity, 0)
+      const filled = typeRooms.reduce((s, r) => {
+        return s + (allocations || []).filter(a => a.room_id === r.id).length
+      }, 0)
+      return { name: type, capacity: totalCap, occupied: Math.min(filled, totalCap), available: Math.max(totalCap - filled, 0) }
+    })
+
+    setStats({ totalRooms, totalStudents, occupiedRooms, availableRooms, totalIncome, totalExpenses })
     setChartData(chart)
   }
 
   async function fetchInquiries() {
-    const { data } = await supabase
-      .from('inquiries')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(5)
+    const { data } = await supabase.from('inquiries').select('*').order('created_at', { ascending: false }).limit(5)
     setInquiries(data || [])
   }
 
+  const profit = stats.totalIncome - stats.totalExpenses
+
   const STAT_CARDS = [
-    { label: 'Total Rooms',    value: stats.total,     icon: BedDouble,    color: 'text-blue-400',   bg: 'bg-blue-500/10' },
-    { label: 'Occupied',       value: stats.occupied,  icon: Users,        color: 'text-red-400',    bg: 'bg-red-500/10'  },
-    { label: 'Available',      value: stats.available, icon: CheckCircle2, color: 'text-green-400',  bg: 'bg-green-500/10'},
-    { label: 'Monthly Revenue',value: `Rs. ${stats.revenue.toLocaleString()}`, icon: TrendingUp, color: 'text-gold-400', bg: 'bg-yellow-500/10'},
+    { label: 'Total Rooms', value: stats.totalRooms, icon: BedDouble, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    { label: 'Active Students', value: stats.totalStudents, icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    { label: 'Rooms Available', value: stats.availableRooms, icon: CheckCircle2, color: 'text-green-400', bg: 'bg-green-500/10' },
+    { label: 'Total Income', value: `Rs. ${stats.totalIncome.toLocaleString()}`, icon: TrendingUp, color: 'text-green-400', bg: 'bg-green-500/10' },
+    { label: 'Total Expenses', value: `Rs. ${stats.totalExpenses.toLocaleString()}`, icon: TrendingDown, color: 'text-red-400', bg: 'bg-red-500/10' },
+    { label: 'Net Profit', value: `Rs. ${profit.toLocaleString()}`, icon: Wallet, color: profit >= 0 ? 'text-blue-400' : 'text-red-400', bg: profit >= 0 ? 'bg-blue-500/10' : 'bg-red-500/10' },
   ]
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null
     return (
       <div className="bg-navy-800 border border-navy-600 rounded-xl p-3 shadow-xl text-sm">
-        <p className="text-white font-semibold mb-2">{payload[0]?.payload?.label}</p>
+        <p className="text-white font-semibold mb-2">{payload[0]?.payload?.name}</p>
         {payload.map(p => (
-          <p key={p.name} style={{ color: p.color }}>
-            {p.name}: {p.value}
-          </p>
+          <p key={p.name} style={{ color: p.color }}>{p.name}: {p.value}</p>
         ))}
       </div>
     )
@@ -86,7 +97,7 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {STAT_CARDS.map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="card p-5 flex items-center gap-4">
             <div className={`w-12 h-12 ${bg} rounded-xl flex items-center justify-center shrink-0`}>
@@ -112,17 +123,17 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={chartData} barGap={4}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#244d8a" vertical={false} />
-                <XAxis dataKey="label" tick={{ fill: '#9fb6dd', fontSize: 11 }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="name" tick={{ fill: '#9fb6dd', fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fill: '#9fb6dd', fontSize: 11 }} tickLine={false} axisLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="total"    fill="#366bba" radius={[4,4,0,0]} name="Total"    />
+                <Bar dataKey="capacity" fill="#366bba" radius={[4,4,0,0]} name="Capacity" />
                 <Bar dataKey="occupied" fill="#3b82f6" radius={[4,4,0,0]} name="Occupied" />
                 <Bar dataKey="available" fill="#10b981" radius={[4,4,0,0]} name="Available" />
               </BarChart>
             </ResponsiveContainer>
           )}
           <div className="flex gap-5 mt-3">
-            {[['#366bba','Total'],['#3b82f6','Occupied'],['#10b981','Available']].map(([c,l]) => (
+            {[['#366bba','Capacity'],['#3b82f6','Occupied'],['#10b981','Available']].map(([c,l]) => (
               <div key={l} className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-sm" style={{ background: c }} />
                 <span className="text-navy-400 text-xs">{l}</span>
@@ -131,34 +142,31 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Occupancy Rate Donut Placeholder */}
+        {/* Occupancy Rate Donut */}
         <div className="card p-6 flex flex-col items-center justify-center">
           <h3 className="font-heading text-lg font-semibold text-white mb-5 self-start">Occupancy Rate</h3>
           <div className="relative w-32 h-32">
             <svg viewBox="0 0 36 36" className="w-32 h-32 -rotate-90">
               <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1b3d71" strokeWidth="3" />
-              <circle
-                cx="18" cy="18" r="15.9" fill="none"
-                stroke="#3b82f6" strokeWidth="3"
-                strokeDasharray={`${stats.total > 0 ? (stats.occupied / stats.total * 100).toFixed(1) : 0} 100`}
-                strokeLinecap="round"
-              />
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="#3b82f6" strokeWidth="3"
+                strokeDasharray={`${stats.totalRooms > 0 ? (stats.occupiedRooms / stats.totalRooms * 100).toFixed(1) : 0} 100`}
+                strokeLinecap="round" />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <p className="text-3xl font-bold font-heading text-blue-400">
-                {stats.total > 0 ? Math.round((stats.occupied / stats.total) * 100) : 0}%
+                {stats.totalRooms > 0 ? Math.round((stats.occupiedRooms / stats.totalRooms) * 100) : 0}%
               </p>
-              <p className="text-navy-400 text-xs">Occupied</p>
+              <p className="text-navy-400 text-xs">Full</p>
             </div>
           </div>
           <div className="mt-5 space-y-2 w-full">
             <div className="flex justify-between text-sm">
-              <span className="text-navy-400">Occupied</span>
-              <span className="text-red-400 font-semibold">{stats.occupied}</span>
+              <span className="text-navy-400">Full Rooms</span>
+              <span className="text-red-400 font-semibold">{stats.occupiedRooms}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-navy-400">Available</span>
-              <span className="text-green-400 font-semibold">{stats.available}</span>
+              <span className="text-green-400 font-semibold">{stats.availableRooms}</span>
             </div>
           </div>
         </div>

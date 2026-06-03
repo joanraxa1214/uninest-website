@@ -99,7 +99,6 @@ Income/Expense ledger calculating total net balance over time.
 UI to dynamically adjust real-time prices displayed to the public landing page via database pulls.
 
 ---
-
 ## Open Questions
 1. Do you want me to set up the Vite + React boilerplate right away and start building the UI components while you set up the Supabase project?
 2. Do you have a preference for any specific charting library other than `recharts` for the occupancy charts?

@@ -1,11 +1,7 @@
+import { Link } from 'react-router-dom'
 import { Building2, MapPin, Phone, Mail, Facebook, Instagram, Twitter } from 'lucide-react'
 
 export default function Footer() {
-  const scrollTo = (href) => {
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <footer className="bg-navy-950 border-t border-navy-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -25,11 +21,8 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-9 h-9 bg-navy-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors duration-200"
-                >
+                <a key={i} href="#"
+                  className="w-9 h-9 bg-navy-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors duration-200">
                   <Icon className="w-4 h-4 text-navy-300 hover:text-white" />
                 </a>
               ))}
@@ -41,19 +34,17 @@ export default function Footer() {
             <h4 className="font-heading text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {[
-                { label: 'Home', href: '#home' },
-                { label: 'Our Rooms', href: '#rooms' },
-                { label: 'Pricing', href: '#pricing' },
-                { label: 'Facilities', href: '#features' },
-                { label: 'Contact Us', href: '#contact' },
+                { label: 'Home', to: '/' },
+                { label: 'Our Rooms', to: '/rooms' },
+                { label: 'Pricing', to: '/pricing' },
+                { label: 'Facilities', to: '/features' },
+                { label: 'Contact Us', to: '/contact' },
               ].map((link) => (
                 <li key={link.label}>
-                  <button
-                    onClick={() => scrollTo(link.href)}
-                    className="text-navy-400 hover:text-blue-400 text-sm transition-colors duration-200"
-                  >
+                  <Link to={link.to}
+                    className="text-navy-400 hover:text-blue-400 text-sm transition-colors duration-200">
                     {link.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -3,9 +3,9 @@ import { Save, Tag, RefreshCw, CheckCircle2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
 const DEFAULT_PRICING = [
-  { room_type: 'Single Room',    monthly_price: 8000, security_deposit: 10000 },
-  { room_type: 'Double Sharing', monthly_price: 5500, security_deposit: 8000  },
-  { room_type: 'Triple Sharing', monthly_price: 4000, security_deposit: 6000  },
+  { room_type: 'Single Room',    monthly_rent: 8000, security_deposit: 10000 },
+  { room_type: 'Double Sharing', monthly_rent: 5500, security_deposit: 8000  },
+  { room_type: 'Triple Sharing', monthly_rent: 4000, security_deposit: 6000  },
 ]
 
 const ROOM_ICONS = {
@@ -49,13 +49,13 @@ export default function PricingConfig() {
 
       if (existing?.id) {
         await supabase.from('pricing').update({
-          monthly_price:    Number(item.monthly_price),
+          monthly_rent:     Number(item.monthly_rent),
           security_deposit: Number(item.security_deposit),
         }).eq('id', existing.id)
       } else {
         await supabase.from('pricing').insert([{
           room_type:        item.room_type,
-          monthly_price:    Number(item.monthly_price),
+          monthly_rent:     Number(item.monthly_rent),
           security_deposit: Number(item.security_deposit),
         }])
       }
@@ -67,7 +67,7 @@ export default function PricingConfig() {
     fetchPricing()
   }
 
-  const updatePrice = (idx, field, val) => {
+  const updateField = (idx, field, val) => {
     const updated = [...pricing]
     updated[idx] = { ...updated[idx], [field]: val }
     setPricing(updated)
@@ -145,8 +145,8 @@ export default function PricingConfig() {
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-400 text-sm font-semibold">Rs.</span>
                     <input
                       type="number" min={0}
-                      value={item.monthly_price}
-                      onChange={e => updatePrice(idx, 'monthly_price', e.target.value)}
+                      value={item.monthly_rent}
+                      onChange={e => updateField(idx, 'monthly_rent', e.target.value)}
                       className="input-field pl-10 text-blue-300 font-semibold text-lg"
                     />
                   </div>
@@ -165,7 +165,7 @@ export default function PricingConfig() {
                     <input
                       type="number" min={0}
                       value={item.security_deposit}
-                      onChange={e => updatePrice(idx, 'security_deposit', e.target.value)}
+                      onChange={e => updateField(idx, 'security_deposit', e.target.value)}
                       className="input-field pl-10 text-gold-400 font-semibold text-lg"
                     />
                   </div>
@@ -178,7 +178,7 @@ export default function PricingConfig() {
                 <div className="mt-5 pt-5 border-t border-navy-700/50 space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="text-navy-400">Monthly</span>
-                    <span className="text-blue-300 font-semibold">Rs. {Number(item.monthly_price).toLocaleString()}</span>
+                    <span className="text-blue-300 font-semibold">Rs. {Number(item.monthly_rent).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-navy-400">Security</span>
@@ -186,7 +186,7 @@ export default function PricingConfig() {
                   </div>
                   <div className="flex justify-between text-sm font-semibold">
                     <span className="text-navy-300">1st Month Total</span>
-                    <span className="text-white">Rs. {(Number(item.monthly_price) + Number(item.security_deposit)).toLocaleString()}</span>
+                    <span className="text-white">Rs. {(Number(item.monthly_rent) + Number(item.security_deposit)).toLocaleString()}</span>
                   </div>
                 </div>
               </div>

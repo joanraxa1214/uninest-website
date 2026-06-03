@@ -1,31 +1,26 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Menu, X, Building2 } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'Rooms', href: '#rooms' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Features', href: '#features' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home',     to: '/' },
+  { label: 'Rooms',    to: '/rooms' },
+  { label: 'Pricing',  to: '/pricing' },
+  { label: 'Features', to: '/features' },
+  { label: 'Contact',  to: '/contact' },
 ]
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const handleNavClick = (href) => {
-    setMobileOpen(false)
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -46,13 +41,17 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <button
+              <Link
                 key={link.label}
-                onClick={() => handleNavClick(link.href)}
-                className="text-navy-300 hover:text-white px-4 py-2 rounded-lg hover:bg-navy-700/40 transition-all duration-200 text-sm font-medium font-body"
+                to={link.to}
+                className={`px-4 py-2 rounded-lg text-sm font-medium font-body transition-all duration-200 ${
+                  location.pathname === link.to
+                    ? 'text-white bg-navy-700/60'
+                    : 'text-navy-300 hover:text-white hover:bg-navy-700/40'
+                }`}
               >
                 {link.label}
-              </button>
+              </Link>
             ))}
           </div>
 
@@ -82,13 +81,18 @@ export default function Navbar() {
         <div className="md:hidden glass border-t border-navy-700/50">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
-              <button
+              <Link
                 key={link.label}
-                onClick={() => handleNavClick(link.href)}
-                className="block w-full text-left text-navy-200 hover:text-white px-4 py-3 rounded-lg hover:bg-navy-700/40 transition-all duration-200 font-medium font-body"
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={`block w-full text-left px-4 py-3 rounded-lg transition-all duration-200 font-medium font-body ${
+                  location.pathname === link.to
+                    ? 'text-white bg-navy-700/60'
+                    : 'text-navy-200 hover:text-white hover:bg-navy-700/40'
+                }`}
               >
                 {link.label}
-              </button>
+              </Link>
             ))}
             <div className="pt-2 border-t border-navy-700/50 mt-2">
               <button
