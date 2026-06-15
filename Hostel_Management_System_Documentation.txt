@@ -1,0 +1,326 @@
+================================================================================
+FINAL YEAR PROJECT DOCUMENTATION
+================================================================================
+
+PROJECT TITLE: UNINEST - HOSTEL MANAGEMENT SYSTEM
+DEVELOPED BY: [Your Name / Team Members]
+SUPERVISOR: [Supervisor Name]
+UNIVERSITY: [Your University Name]
+DATE: [Date]
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+CHAPTER 1: INTRODUCTION
+  1.1 Background
+  1.2 Problem Statement
+  1.3 Objectives of the Project
+  1.4 Scope of the Project
+  1.5 Proposed System
+  1.6 Organization of the Report
+
+CHAPTER 2: LITERATURE REVIEW
+  2.1 Introduction
+  2.2 Existing Systems
+  2.3 Drawbacks of Existing Systems
+  2.4 How Uninest Solves These Problems
+
+CHAPTER 3: SYSTEM ANALYSIS & REQUIREMENTS
+  3.1 Feasibility Study
+    3.1.1 Technical Feasibility
+    3.1.2 Operational Feasibility
+    3.1.3 Economic Feasibility
+  3.2 Hardware Requirements
+  3.3 Software Requirements
+  3.4 Functional Requirements
+  3.5 Non-Functional Requirements
+
+CHAPTER 4: SYSTEM DESIGN
+  4.1 System Architecture
+  4.2 Database Design & Schema
+  4.3 Entity Relationship Description
+  4.4 User Interface Design Approach
+
+CHAPTER 5: IMPLEMENTATION & TECHNOLOGY STACK
+  5.1 Frontend Technologies
+    5.1.1 React.js
+    5.1.2 Tailwind CSS
+    5.1.3 Vite
+    5.1.4 Lucide React & Recharts
+  5.2 Backend & Database Technologies
+    5.2.1 Supabase (PostgreSQL)
+  5.3 System Integration
+
+CHAPTER 6: SYSTEM MODULES & USER MANUAL (WITH SCREENSHOT LOCATIONS)
+  6.1 Dashboard & Analytics
+  6.2 Room Management
+  6.3 Student Management
+  6.4 Financial Management (Payments & Expenses)
+  6.5 Accounts & Transactions Tracking
+  6.6 Inquiries Management
+
+CHAPTER 7: SOFTWARE TESTING
+  7.1 Introduction
+  7.2 Unit Testing
+  7.3 Integration Testing
+  7.4 System Testing
+  7.5 User Acceptance Testing (UAT)
+
+CHAPTER 8: CONCLUSION & FUTURE WORK
+  8.1 Conclusion
+  8.2 Limitations
+  8.3 Future Enhancements
+
+REFERENCES
+
+================================================================================
+CHAPTER 1: INTRODUCTION
+================================================================================
+
+1.1 Background
+Hostel management is a crucial part of educational institutions and private accommodation businesses. Traditionally, hostels have relied on manual record-keeping systems using ledgers, registers, and paper receipts to manage student details, room allocations, fee payments, and daily expenses. As the number of residents increases, managing these activities manually becomes tedious, error-prone, and highly inefficient. Uninest is a comprehensive, digital Hostel Management System designed to streamline and automate these administrative tasks, providing a unified platform for hostel managers and administrators.
+
+1.2 Problem Statement
+The current manual system of managing hostels is fraught with several challenges. Data retrieval is extremely slow, and keeping track of available rooms, pending fee payments, and daily expenses requires constant manual calculation. Furthermore, calculating profit and loss, tracking partial payments, and maintaining historical records of student check-ins and check-outs lead to significant human errors. The loss of paper records can result in severe financial and administrative discrepancies. There is an urgent need for a reliable, secure, and user-friendly computerized system.
+
+1.3 Objectives of the Project
+The primary objectives of Uninest are:
+1. To automate the entire workflow of hostel management.
+2. To provide a seamless room allocation system (Single, Double, Triple sharing).
+3. To maintain an accurate and secure database of all residents/students.
+4. To establish a robust financial module tracking accounts (Bank, Cash, Wallet), payments, and expenses.
+5. To automatically generate transaction records using database triggers when payments or expenses occur.
+6. To provide an interactive dashboard with real-time analytics and statistics.
+
+1.4 Scope of the Project
+This project covers the management of a single hostel facility. It includes tracking of students, automated room allocation, dynamically calculated pricing structures based on room types, recording of inquiries, and a fully integrated accounting system that balances ledgers automatically upon every financial activity. The system is designed strictly for administrative use (managers and admins), with role-based restrictions. Multi-hostel management is beyond the scope of the current version.
+
+1.5 Proposed System
+Uninest proposes a web-based architecture utilizing a modern, reactive frontend (React.js) coupled with a scalable, cloud-based PostgreSQL database (Supabase). The system provides a responsive UI built with Tailwind CSS, ensuring accessibility across different devices. Financial integrity is maintained at the database level using PL/pgSQL triggers, ensuring that no payment or expense can bypass the transaction ledger.
+
+1.6 Organization of the Report
+This report is organized into eight chapters. Chapter 1 introduces the project. Chapter 2 discusses the literature review. Chapter 3 outlines the system analysis and requirements. Chapter 4 details the system design and database schema. Chapter 5 explains the technologies used. Chapter 6 is the user manual mapping to application screenshots. Chapter 7 covers testing, and Chapter 8 concludes the project.
+
+
+================================================================================
+CHAPTER 2: LITERATURE REVIEW
+================================================================================
+
+2.1 Introduction
+The literature review aims to evaluate existing solutions in the market and literature concerning hostel management and property management systems. By analyzing these systems, we can identify gaps and design a superior system.
+
+2.2 Existing Systems
+Most existing local systems are built on legacy technologies such as PHP and MySQL, or Windows Forms with MS Access. They often function locally on a single machine and lack cloud synchronization. Some larger institutions use ERP systems, but these are often too bloated, expensive, and complex for a standalone private hostel.
+
+2.3 Drawbacks of Existing Systems
+1. High Cost: Enterprise ERPs are not affordable for small to medium-sized hostels.
+2. Poor UI/UX: Legacy systems have outdated, clunky interfaces that require extensive training.
+3. Lack of Financial Automation: Existing tools often require manual entry into separate accounting software.
+4. Vulnerability: Local databases are prone to hardware failure, leading to permanent data loss.
+
+2.4 How Uninest Solves These Problems
+Uninest is built entirely on modern web technologies. By utilizing Vite and React, the frontend is lightning fast. By leveraging Supabase, the data is securely backed up in the cloud. The inclusion of database-level triggers automates the accounting process: whenever a payment is logged, the respective account (Cash/Bank/Wallet) is instantly updated, eliminating manual double-entry.
+
+
+================================================================================
+CHAPTER 3: SYSTEM ANALYSIS & REQUIREMENTS
+================================================================================
+
+3.1 Feasibility Study
+Before commencing development, a feasibility study was conducted to ensure the project's viability.
+
+3.1.1 Technical Feasibility
+The project utilizes open-source frameworks (React, Vite, Tailwind CSS) and a generous free tier of Supabase for the database. The team has the necessary technical skills in JavaScript and SQL to implement the solution. Thus, it is technically highly feasible.
+
+3.1.2 Operational Feasibility
+The system is designed with a user-centric approach. The inclusion of the Lucide React icon library and Recharts makes the dashboard intuitive. Non-technical staff can easily learn to use the system with minimal training.
+
+3.1.3 Economic Feasibility
+Since the project uses open-source software and free-tier cloud hosting for development, the cost of development and deployment is exceptionally low, making it economically feasible.
+
+3.2 Hardware Requirements
+For Server/Database: Cloud Hosted (Supabase)
+For Client/Admin PC:
+- Processor: Intel Core i3 or equivalent (minimum)
+- RAM: 4GB minimum
+- Storage: 100MB of free space for browser cache
+- Internet Connection: Minimum 2 Mbps
+
+3.3 Software Requirements
+- Operating System: Windows, macOS, or Linux
+- Web Browser: Google Chrome, Mozilla Firefox, or Microsoft Edge (Latest Versions)
+- Development Tools: VS Code, Node.js, Vite
+
+3.4 Functional Requirements
+- Authentication: System must allow admin/manager login.
+- Room Management: Add, view, and allocate rooms. System must check capacity before allocation.
+- Student Management: Register students with CNIC, emergency contacts, and personal info.
+- Finance Management: Log payments, handle partial payments, and log expenses.
+- Accounting: Maintain isolated accounts (Main Cash Drawer, HBL Bank Account, Easypaisa Wallet).
+- Inquiries: Log prospective students and their preferred room types.
+
+3.5 Non-Functional Requirements
+- Performance: Dashboard stats should load in under 2 seconds.
+- Security: Passwords must be hashed. Row Level Security (RLS) can be applied in the future.
+- Usability: The interface must be responsive and adapt to mobile and desktop screens.
+- Reliability: System should handle concurrent queries without data corruption.
+
+
+================================================================================
+CHAPTER 4: SYSTEM DESIGN
+================================================================================
+
+4.1 System Architecture
+Uninest follows a 2-Tier Client-Server Architecture.
+- Presentation Tier: A Single Page Application (SPA) built with React.js. It handles routing locally via React Router DOM.
+- Data Tier: A Supabase instance providing a REST API over a PostgreSQL database.
+
+4.2 Database Design & Schema
+The database is structured to achieve 3rd Normal Form (3NF).
+Key Tables Include:
+1. ROOMS: (id, room_number, type, capacity)
+2. STUDENTS: (id, name, cnic, phone, email, address, is_active)
+3. ROOM_ALLOCATIONS: Maps Students to Rooms with checkin_date and checkout_date.
+4. PRICING: (room_type, monthly_rent, security_deposit)
+5. ACCOUNTS: (id, name, type, balance)
+6. PAYMENTS: Logs fees paid by students.
+7. EXPENSES: Logs hostel expenditures.
+8. TRANSACTIONS: Master ledger recording all credits and debits.
+9. INQUIRIES: Stores pre-admission leads.
+10. USERS: Manages roles (Admin/Manager).
+
+4.3 Entity Relationship Description
+- A Student can have multiple Room Allocations over time, but only one active allocation. (1-to-Many)
+- A Room can have multiple Students up to its capacity limit. (1-to-Many)
+- A Student can make multiple Payments. (1-to-Many)
+- An Account can have multiple Payments and Expenses linked to it. (1-to-Many)
+- A Payment/Expense strictly maps to ONE Transaction. (1-to-1 via Triggers)
+
+4.4 User Interface Design Approach
+The UI is designed using a modern sidebar layout. The sidebar serves as the main navigation hub. A top bar is used for user profiles and quick actions. We heavily utilized Tailwind CSS utility classes to implement spacing, typography, and color themes consistently without writing custom CSS files.
+
+
+================================================================================
+CHAPTER 5: IMPLEMENTATION & TECHNOLOGY STACK
+================================================================================
+
+5.1 Frontend Technologies
+
+5.1.1 React.js (v18)
+React is used for its component-based architecture. Features like Rooms, Students, and Payments are isolated into reusable components, making the codebase maintainable.
+
+5.1.2 Tailwind CSS
+A utility-first CSS framework that allows rapid UI development. It eliminates the need for maintaining large stylesheet files and prevents CSS conflicts.
+
+5.1.3 Vite
+Vite is used as the build tool instead of Create React App. Vite provides an incredibly fast Hot Module Replacement (HMR) during development and optimizes the production build efficiently.
+
+5.1.4 Lucide React & Recharts
+Lucide React provides clean, scalable vector icons used throughout the sidebar and buttons. Recharts is utilized to render dynamic bar and pie charts on the dashboard to visualize revenue and occupancy data.
+
+5.2 Backend & Database Technologies
+
+5.2.1 Supabase (PostgreSQL)
+Supabase is an open-source Firebase alternative. It provides a full PostgreSQL database. We utilized advanced PostgreSQL features such as:
+- PL/pgSQL Triggers: We created `process_payment_transaction()` and `process_expense_transaction()`. When a payment is inserted, the trigger automatically inserts a credit into the TRANSACTIONS table and updates the ACCOUNT balance.
+
+5.3 System Integration
+The frontend communicates with Supabase using the `@supabase/supabase-js` client library. Queries are written asynchronously, and React state is updated upon resolving promises.
+
+
+================================================================================
+CHAPTER 6: SYSTEM MODULES & USER MANUAL
+================================================================================
+NOTE TO STUDENT: Under each section below, please paste the relevant screenshot of your application in your Microsoft Word Document.
+
+6.1 Dashboard & Analytics
+The Dashboard is the landing page after login. It displays high-level metrics such as Total Active Students, Available Rooms, Total Revenue, and Total Expenses. It uses Recharts to visually graph financial trends.
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Dashboard Page showing charts and metric cards]
+--------------------------------------------------
+
+6.2 Room Management
+This module allows the manager to add new rooms to the building. You can select the Room Type (Single, Double Sharing, Triple Sharing) which dictates the capacity. 
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Room List Page / Add Room Modal]
+--------------------------------------------------
+
+6.3 Student Management
+This module handles the admission of new students. The manager enters personal details, CNIC, and emergency contacts. Once registered, a student can be allocated to an available room.
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Students Directory Page]
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Room Allocation Form]
+--------------------------------------------------
+
+6.4 Financial Management (Payments & Expenses)
+The Payments section tracks all fees collected. When logging a payment, the manager selects the Student, Month, Amount, Payment Method, and the Destination Account (e.g., Bank or Cash). The Expenses section logs utility bills, maintenance, and salaries.
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Payments History Page]
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Add New Expense Modal]
+--------------------------------------------------
+
+6.5 Accounts & Transactions Tracking
+This module gives a real-time view of the Hostel's liquidity. It shows the current balance of the Main Cash Drawer, Bank Accounts, and Wallets. The transaction ledger shows a detailed, non-editable history of all money moving in and out, maintained by the DB triggers.
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Accounts / Transactions Ledger Page]
+--------------------------------------------------
+
+6.6 Inquiries Management
+A simple CRM module to track walk-in or phone inquiries from students looking for accommodation.
+--------------------------------------------------
+[INSERT SCREENSHOT HERE: Inquiries List]
+--------------------------------------------------
+
+
+================================================================================
+CHAPTER 7: SOFTWARE TESTING
+================================================================================
+
+7.1 Introduction
+Testing ensures that Uninest meets the specified requirements and is free of critical bugs. We adopted a systematic approach to testing.
+
+7.2 Unit Testing
+Individual modules, especially database triggers, were tested independently. For example, manual SQL inserts were performed on the `payments` table to verify that the `accounts` table balance updated correctly via the trigger.
+
+7.3 Integration Testing
+The integration between the React frontend and Supabase backend was tested. We ensured that data submitted via React forms was accurately formatted and accepted by the PostgreSQL constraints.
+
+7.4 System Testing
+The system was tested as a whole on different browsers (Chrome, Firefox, Edge) to ensure cross-browser compatibility and responsive design integrity.
+
+7.5 User Acceptance Testing (UAT)
+A simulated environment was created with dummy data (Seed data included in `supabase_schema.sql`). Mock users performed standard operational tasks like admitting a student, allocating a room, and collecting rent to validate the user experience.
+
+
+================================================================================
+CHAPTER 8: CONCLUSION & FUTURE WORK
+================================================================================
+
+8.1 Conclusion
+The Uninest Hostel Management System successfully addresses the inefficiencies of manual hostel administration. By leveraging React, Tailwind CSS, and Supabase, the project delivers a fast, reliable, and user-friendly platform. The automated accounting triggers significantly reduce human error, ensuring transparent financial tracking.
+
+8.2 Limitations
+- The system currently only supports a single hostel building/branch.
+- Row Level Security (RLS) policies are currently disabled for rapid development, meaning all authenticated users have full access.
+- No integrated SMS or Email gateway for sending fee reminders to students.
+
+8.3 Future Enhancements
+- Multi-Branch Support: Extending the database schema to handle multiple hostel locations under one admin panel.
+- Student Portal: Developing a separate login portal for students to view their payment history and submit maintenance complaints.
+- Notifications: Integrating Twilio or SendGrid APIs to automate SMS/Email reminders for pending rent.
+- RLS Implementation: Restricting 'manager' roles from deleting financial records, allowing only 'admin' to do so.
+
+================================================================================
+REFERENCES
+================================================================================
+1. React Documentation. (2024). https://reactjs.org/docs/getting-started.html
+2. Tailwind CSS Documentation. (2024). https://tailwindcss.com/docs
+3. Supabase Database and Triggers. (2024). https://supabase.com/docs
+4. Vite build tool. (2024). https://vitejs.dev/
+5. PostgreSQL PL/pgSQL Documentation. https://www.postgresql.org/docs/current/plpgsql.html
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

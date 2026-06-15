@@ -68,7 +68,7 @@ export default function ContactPage() {
                 <div>
                   <label className="block text-navy-300 text-sm font-medium mb-2">Phone Number *</label>
                   <input type="tel" name="phone" required value={form.phone} onChange={handleChange}
-                    placeholder="+92 300 123 4567" className="input-field" />
+                    placeholder="+92 339 205 1214" className="input-field" />
                 </div>
               </div>
 
@@ -110,7 +110,7 @@ export default function ContactPage() {
           {/* Alternate Contact */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { label: 'Call Us', value: '+92 300 123 4567', href: 'tel:+923001234567' },
+              { label: 'Call Us', value: '+92 339 205 1214', href: 'tel:+923392051214' },
               { label: 'Email Us', value: 'info@uninest.pk', href: 'mailto:info@uninest.pk' },
               { label: 'Visit Us', value: 'University Road, Multan', href: '#' },
             ].map((item) => (

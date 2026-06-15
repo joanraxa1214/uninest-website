@@ -31,7 +31,7 @@ const ROOMS = [
     tagColor: 'bg-green-500/20 text-green-300 border-green-500/30',
     highlight: false,
     amenities: ['Shared with 2 students', 'Shared bathroom', 'Ceiling fans', 'Study table', 'Shared storage', 'High-speed WiFi'],
-    image_url: 'https://images.unsplash.com/photo-1555854817-9160601df5f9?auto=format&fit=crop&q=80&w=1000'
+    image_url: 'https://804.alhuda.com.pk/wp-content/uploads/2025/01/Hostel-Near-Model-Town.jpg'
   },
 ]
 
